@@ -1,1 +1,13 @@
-/home/omri/Dropbox/config/gvimrc_vundle
+" Trick to open gVim maximized
+set lines=200
+set columns=300
+
+" Add some window resize functionality
+nnoremap <C-Right> : vertical resize +5<CR>
+nnoremap <C-Left>  : vertical resize -5<CR>
+nnoremap <C-Up>    : resize -5<CR>
+nnoremap <C-Down>  : resize +5<CR>
+
+" Select a nice font for Vim
+set guifont=DejaVu\ Sans\ Mono\ 11
+
