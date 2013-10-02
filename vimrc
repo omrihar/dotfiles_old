@@ -277,6 +277,12 @@ let g:Tex_MultipleCompileFormats = 'pdf, aux'
 let g:Tex_ViewRule_pdf = 'okular'
 let g:Tex_CompileRule_pdf = "/usr/bin/latexmk -e '$pdflatex=q/pdflatex -interaction=nonstopmode -file-line-error -hatl-on-error -synctex=1/' -pdf -bibtex $*"
 
+" Make cool replacement of latex symbols with Unicode ones!
+set cole=2
+let g:tex_conceal="adgm"
+" make  colors of conceal better fit Molokai (for some reason needs autocommand)
+au FileType tex hi Conceal guibg=#272822 guifg=#F8F8F2
+
 " ---- VCSCOMMAND ---
 nnoremap <leader>d :VCSDiff<CR>
 
