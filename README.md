@@ -30,5 +30,3 @@ and wait for all the bundles to download and install. You can run
 For more information see [Vundle on GitHub](http://github.com/gmarik/vundle)
 
 *Have Fun!*
-
-Test the push to bitbucket.
