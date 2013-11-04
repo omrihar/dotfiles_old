@@ -13,7 +13,7 @@ Bundle 'gmarik/vundle'
 " repos on github
 " ---- Color Themes ----
 Bundle 'tomasr/molokai'
-"Bundle 'goatslacker/mango.vim'
+"Bundle 'xoria256.vim'
 
 " ---- Tim Pope's plugins ----
 Bundle 'tpope/vim-fugitive'
@@ -160,7 +160,8 @@ vnoremap Q gq
 nnoremap Q gqap
 
 " Make ctrl-backspace delete the word before the cursor (also in insert mode).
-inoremap <C-BS> <C-O>b<C-O>dw noremap <C-BS> bdw
+inoremap <C-BS> <C-O>b<C-O>dw 
+noremap <C-BS> bdw
 
 " Enable spell checking
 set spell
