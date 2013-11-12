@@ -29,4 +29,25 @@ and wait for all the bundles to download and install. You can run
 `:BundleUpdate` at any time to check all installed bundles.
 For more information see [Vundle on GitHub](http://github.com/gmarik/vundle)
 
+Extra setup for some plugins
+----------------------------
+I use YouCompleteMe and TernJS, both of which require an extra step or two.
+First, make sure you have a vim version greater than 7.3.584 (usually you need
+to [compile vim from
+source](https://github.com/Valloric/YouCompleteMe/wiki/Building-Vim-from-source)).
+
+To make YouCompleteMe work, you need to run the following:
+```
+sudo apt-get install build-essential cmake python-dev
+cd ~/.vim/bundle/YouCompleteMe
+./install.sh
+```
+(see YouCompleteMe instructions for using YCM with C-like languages).
+
+To make TernJS work, run
+```
+cd ~/.vim/bundle/tern_for_vim
+npm install
+```
+
 *Have Fun!*
