@@ -49,11 +49,11 @@ Bundle 'tsaleh/vim-matchit'
 Bundle 'SirVer/ultisnips'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'mattn/calendar-vim'
-"Bundle 'Shougo/neocomplcache.vim'
 
 " Autocomplete
-"Bundle 'Valloric/YouCompleteMe'
-Bundle 'davidhalter/jedi-vim'
+Bundle 'Valloric/YouCompleteMe'
+"Bundle 'davidhalter/jedi-vim'
+"Bundle 'Shougo/neocomplcache.vim'
 
 " JavaScript Assistance
 Bundle 'marijnh/tern_for_vim'
@@ -297,8 +297,8 @@ let g:pymode_lint_write = 1
 let g:pymode_virtualenv = 1
 
 " Enable breakpoints plugin
-let g:pymode_breakpoint = 1
-let g:pymode_breakpoint_key = 'b'
+"let g:pymode_breakpoint = 1
+"let g:pymode_breakpoint_key = 'b'
 
 " syntax highlighting
 let g:pymode_syntax = 1
@@ -316,8 +316,8 @@ let EasyMotion_grouping=2
 
 
 " ---- ULTISNIPTS ----
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsExpandTrigger="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","Snippets"]
 
