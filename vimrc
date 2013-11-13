@@ -49,6 +49,8 @@ Bundle 'tsaleh/vim-matchit'
 Bundle 'SirVer/ultisnips'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'mattn/calendar-vim'
+Bundle 'rosenfeld/conque-term'
+"Bundle 'myusuf3/numbers.vim'
 
 " Autocomplete
 Bundle 'Valloric/YouCompleteMe'
@@ -67,6 +69,7 @@ Bundle 'vcscommand.vim'
 Bundle 'AutoClose'
 Bundle 'IndentAnything'
 Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+
 
 filetype plugin indent on
 
@@ -96,10 +99,10 @@ set wmw=0
 
 " because it collides with c-j in vim-latex I only define it for non-tex files
 " TODO: find out how this can be achieved!
-map <c-j> <c-w>j<c-w>_
-map <c-k> <c-w>k<c-w>_
-map <c-h> <c-w>h<c-w><Bar>
-map <c-l> <c-w>l<c-w><Bar>
+"map <c-j> <c-w>j<c-w>_
+"map <c-k> <c-w>k<c-w>_
+"map <c-h> <c-w>h<c-w><Bar>
+"map <c-l> <c-w>l<c-w><Bar>
 
 " Makes the newly created vsp window open on the right
 set splitright
@@ -256,8 +259,6 @@ endif
 " ---- PYMODE OPTIONS ----
 " disable python folding
 "let g:pymode_folding=1
-" don't open quickfix window for code errors
-"let g:pymode_lint_cwindow=0
 " open a new split when going to definition
 "let g:pymode_rope_goto_def_newwin="new"
 " disable rope
@@ -282,6 +283,9 @@ endif
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
 let g:pymode_rope = 0
+
+" don't open quickfix window for code errors
+let g:pymode_lint_cwindow=0
 
 " Documentation
 let g:pymode_doc = 1
@@ -316,10 +320,31 @@ let EasyMotion_grouping=2
 
 
 " ---- ULTISNIPTS ----
-let g:UltiSnipsExpandTrigger="<c-tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","Snippets"]
+
+" ---- ULTISNIPS + YCM INTEGRATION ----
+"function! g:UltiSnips_Complete()
+"    call UltiSnips_ExpandSnippet()
+"    if g:ulti_expand_res == 0
+"        if pumvisible()
+"            return "\<C-n>"
+"        else
+"            call UltiSnips_JumpForwards()
+"            if g:ulti_jump_forwards_res == 0
+"                return "\<TAB>"
+"            endif
+"        endif
+"    endif
+"    return ""
+"endfunction
+
+"au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+"let g:UltiSnipsJumpForwardTrigger="<tab>"
+"let g:UltiSnipsListSnippets="<c-e>"
+
 
 " ---- VIM-LATEX ----
 let g:tex_flavor='latex'
