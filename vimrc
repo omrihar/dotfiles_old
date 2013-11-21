@@ -27,6 +27,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-sleuth'
 Bundle 'tpope/vim-obsession'
+Bundle 'tpope/vim-abolish'
 
 " ---- Other Plugins on GitHub -----
 Bundle 'kien/ctrlp.vim'
@@ -51,6 +52,7 @@ Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'mattn/calendar-vim'
 Bundle 'rosenfeld/conque-term'
 "Bundle 'myusuf3/numbers.vim'
+Bundle 'vimoutliner/vimoutliner'
 
 " Autocomplete
 Bundle 'Valloric/YouCompleteMe'
@@ -183,6 +185,10 @@ endif
 
 " Vimcast #1: show invisibles
 set listchars=tab:▸\ ,eol:¬
+
+" Make vim copy and paste using the "* register so that it yanks directly into
+" the clipboard
+set clipboard=unnamedplus
 
 
 " ---- DEFINE SOME AUTOCOMMANDS ----
