@@ -95,6 +95,10 @@ inoremap <C-s> <Esc>:w<CR>
 nnoremap j gj
 nnoremap k gk
 
+" Easily add newline from normal mode
+nmap <CR> o<Esc>k
+nmap <S-CR> O<Esc>j
+
 " Make window navigation easy!
 set wmh=0
 set wmw=0
@@ -351,6 +355,8 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips","Snippets"]
 "let g:UltiSnipsJumpForwardTrigger="<tab>"
 "let g:UltiSnipsListSnippets="<c-e>"
 
+" YCM Binding for jumping to definition
+nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 " ---- VIM-LATEX ----
 let g:tex_flavor='latex'
