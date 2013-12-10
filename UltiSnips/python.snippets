@@ -1,0 +1,14 @@
+snippet ass "A general assert statement"
+assert isinstance(${1:var}, ${2:(int, long)}) ${3:and}
+$0
+endsnippet
+
+snippet assi "Asserts that the variable is an integer"
+assert isinstance(${1:var}, (int, long))
+$0
+endsnippet
+
+snippet assip "Asserts that the variable is a positive integer"
+assert isinstance(${1:var}, (int, long)) and $1 > 0
+$0
+endsnippet
