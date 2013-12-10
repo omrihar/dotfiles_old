@@ -34,4 +34,6 @@ git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 
 vim +BundleInstall +qall
 
+ln -s $DIR/UltiSnips ~/.vim/UltiSnips
+
 echo "Congratulations! If everything went well you should have my vim configuration!"

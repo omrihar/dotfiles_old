@@ -1,0 +1,208 @@
+##############################################
+# Contains Snippets to for Qooxdoo framework #
+##############################################
+
+snippet cnl "Add console.log command"
+console.log(${1:console_stuff});
+endsnippet
+
+snippet qxb "Add a form button" w
+new qx.ui.form.Button(this.tr("${1:Button_caption}"),"qx/icon/Tango/16/${2:icon_name}"${3:,this.__commands.}${4})$0
+endsnippet
+
+snippet qxc "Create a new composite contaienr" 
+new qx.ui.container.Composite(new qx.ui.layout.${1});
+$0
+endsnippet
+
+snippet qxcmd "Add a command to this.__commands list"
+commands.${1:command_name} = new qx.ui.core.Command("");
+commands.$1.addListener("execute", ${2}, this);
+$0
+endsnippet
+
+snippet qxg "Creates a qooxdoo groupbox"
+new qx.ui.groupbox.GroupBox(this.tr("${1:Groupbox Title}"));
+$0
+endsnippet
+
+snippet qxgb "Creates q groupbox, including setting a layout"
+var ${1:gb} = new qx.ui.groupbox.GroupBox(this.tr("${2:Title}"));
+$1.setLayout(new qx.ui.layout.${3:layout});
+$0
+endsnippet
+
+snippet qxl "Add a label" w
+new qx.ui.basic.Label(this.tr("${1:Label text}"))
+endsnippet
+
+snippet qxlr "Add a 'richt text' label" w
+new qx.ui.basic.Label(this.tr("${1:Label text}")).set({rich:true})
+endsnippet
+
+snippet qxlrr "Add a 'rich text' label without this.tr" w
+new qx.ui.basic.Label(${1:Label text}).set({rich:true})
+endsnippet
+
+snippet qxli "Create a ListItem" 
+new qx.ui.form.ListItem(this.tr("${1:title}"));
+$0
+endsnippet
+
+snippet qxt "Add a textfield" w
+new qx.ui.form.TextField()
+endsnippet
+
+snippet qxta "Add a textarea" w
+new qx.ui.form.TextArea()
+endsnippet
+
+snippet pos "Create a grid position for qooxdoo" w
+{row: ${1:row}, column: ${2:column}}
+endsnippet
+
+snippet qxsp "Creates a spinner control which allows only Integer values" w
+new qx.ui.form.Spinner().set({minimum:0, maximum: 10,value:2, numberFormat: new qx.util.format.NumberFormat().set({maximumFractionDigits:0})});
+endsnippet
+
+snippet qxmj "Converts a model to a JSON object" w
+qx.util.Serializer.toNativeObject(${1})$0
+endsnippet
+
+snippet rpc "A template of an RPC call with binding and everything"
+this.__rpc.callAsync(this.bindTo(function(r,e){
+    if (e === null){
+        $0
+    } else alert(e);
+}), "${1}"${2});
+endsnippet
+
+snippet marshal "Create a marshal line (will probably save some time)" w
+qx.data.marshal.Json.createModel($0)
+endsnippet
+
+
+########################################################################
+# A long snippet defining a new window with some predefined constructs #
+########################################################################
+
+snippet qxcw "Defines a new window with some basic methods defined"
+/**
+ * ${1:class documentation}
+ */
+qx.Class.define("sdh.${2:class_name}",
+{
+    extend : sdh.widgets.Window,
+ 
+    /**
+     * Construct
+     * @param $3 {}
+     */
+    construct : function(${3:data}){
+        if ($3 != null){
+            this.__$3 = $3;
+            var title = this.tr("${4:editor title}");
+        } else {
+            var title = this.tr("${5:new title}");
+        }
+        this.base(arguments,title,"${5:qx/icon/Tango/16/}{$6:icon}");
+        this._generateCommands();
+        this._generateGUI();
+ 
+        this.addListener("resize",this.center,this);
+    },
+ 
+    members : {
+        // Private members
+        __rpc       : sdh.io.DataService.getInstance().getRpc(),
+        __constants : sdh.util.Constants.getInstance(),
+        __commands  : null,
+ 
+        /**
+         * Generates the commands.
+         */
+        _generateCommands : function(){
+            var commands = {};
+ 
+ 
+            this.__commands = commands;
+        },
+ 
+        /**
+         * Generates the GUI.
+         */
+        _generateGUI : function(){
+            $0   
+        },
+ 
+        /**
+         * Closes the window.
+         */
+        _closeWindow : function(){
+            this.close();
+ 
+        }
+    }
+});
+endsnippet
+
+###########################################
+# A snippet defining a new generic Widget #
+###########################################
+snippet qxwidget "Creates a widget control"
+/**
+ * ${1:Widget documentation}
+ */
+qx.Class.define("sdh.${2:class name}",
+{
+    extend : qx.ui.core.Widget,
+
+    // overridden
+    construct : function($0)
+    {
+        this.base(arguments);
+
+        this._setLayout(new qx.ui.layout.${3:layout});
+    },
+
+    members : 
+    {
+        // PRIVATE MEMBERS
+        __rpc       : sdh.io.DataService.getInstance().getRpc(),
+        __constants : sdh.util.Constants.getInstance(),
+        __commands  : null,
+
+        // PROTECTED METHODS
+
+        // overridden
+        _createChildControlImpl : function(id, hash)
+        {
+            var control;
+
+            switch(id){
+                
+            }
+            return control || this.base(arguments, id);
+        }
+    }
+});
+endsnippet
+
+##################################################################
+# A snippet defining a comment block at the top of a source file #
+##################################################################
+snippet topblock "Comment block at the top of a file"
+/* ----------------------------------------------------------------------------------------
+
+ Copyright: 
+    2011-2012 S-DH GmbH, www.s-dh.de
+
+ Author:
+    Omri Har-Shemesh
+
+ ${1} 
+------------------------------------------------------------------------------------------ */
+$0
+endsnippet
+
+# vim:ft=snippets:

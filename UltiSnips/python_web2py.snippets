@@ -1,0 +1,37 @@
+global !p
+def cs(snip):
+    c = '#'
+    cs = snip.opt("&commentstring")
+    if len(cs) == 3:
+        c = cs[0]
+    return c
+endglobal
+
+#############################################################################
+# DB related snippets - db defines a table (including comment), fld a Field #
+#############################################################################
+
+# This snippet defines a db, with a comment box included for description.
+snippet db "Defines a new table in the database" b
+`!p
+c = cs(snip)
+
+snip.rv = (len(t[1])+4)*c
+bar = snip.rv
+snip += c + ' '`${1:Table Description}`!p
+
+snip.rv = ' ' + c
+snip += bar`
+
+db.define_table("${2:table_name}",
+   ${3:Fields} 
+)
+$0
+endsnippet
+
+snippet fld "Defines a field within a table definition"
+Field("${1:Field name}"${2})${3}
+endsnippet
+
+
+# vim:ft=snippets:
