@@ -53,6 +53,8 @@ Bundle 'mattn/calendar-vim'
 Bundle 'rosenfeld/conque-term'
 "Bundle 'myusuf3/numbers.vim'
 Bundle 'vimoutliner/vimoutliner'
+Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'lambdalisue/shareboard.vim'
 
 " Autocomplete
 Bundle 'Valloric/YouCompleteMe'
@@ -61,7 +63,9 @@ Bundle 'Valloric/YouCompleteMe'
 
 " JavaScript Assistance
 Bundle 'marijnh/tern_for_vim'
+Bundle 'jelera/vim-javascript-syntax'
 Bundle 'pangloss/vim-javascript'
+Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'walm/jshint.vim'
 
 " ---- plugins not from GitHub ---- 
@@ -240,10 +244,22 @@ if has('autocmd') && !exists("autocommands_loaded")
 
     " Turn off alt keys so that I can use them in vim-latex
     au FileType *.tex set winaltkeys=no
+
+    " Closes the scratch window after autocompletion has occurred.
+    autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
+    autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
 endif
 
 
 " ---- PLUGIN CONFIGURATION ----
+
+" Tell vim-pandoc I use hard wraps
+let g:pandoc_use_hard_wraps = 1
+let g:pandoc_auto_format = 1
+
+" Change shareboard port:
+let g:shareboard_port = 8082
+
 
 " Ack - tell Ack which program to use
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"
