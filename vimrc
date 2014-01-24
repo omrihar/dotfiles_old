@@ -254,8 +254,11 @@ endif
 " ---- PLUGIN CONFIGURATION ----
 
 " Tell vim-pandoc I use hard wraps
-let g:pandoc_use_hard_wraps = 1
+"let g:pandoc_use_hard_wraps = 1
 let g:pandoc_auto_format = 1
+let g:pandoc_bibfiles = ['~/repos/writings/library.bib']
+let g:SuperTabDefaultCompletionType = "context"
+
 
 " Change shareboard port:
 let g:shareboard_port = 8082
@@ -389,7 +392,8 @@ let g:Tex_CompileRule_pdf = "/usr/bin/latexmk -e '$pdflatex=q/pdflatex -interact
 set cole=2
 let g:tex_conceal="adgm"
 " make  colors of conceal better fit Molokai (for some reason needs autocommand)
-au FileType tex hi Conceal guibg=#272822 guifg=#F8F8F2
+au FileType tex,pandoc hi Conceal guibg=#272822 guifg=#F8F8F2
+au FileType tex,pandoc hi Folded guifg=#468eb3 guibg=#000000
 
 " ---- VCSCOMMAND ---
 nnoremap <leader>d :VCSDiff<CR>
