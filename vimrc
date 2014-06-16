@@ -54,6 +54,7 @@ Bundle 'rosenfeld/conque-term'
 "Bundle 'myusuf3/numbers.vim'
 Bundle 'vimoutliner/vimoutliner'
 Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'vim-scripts/RST-Tables'
 Bundle 'lambdalisue/shareboard.vim'
 
 " Autocomplete
@@ -311,7 +312,8 @@ endif
 " ]]            Jump on next class or function (normal, visual, operator modes)
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
-let g:pymode_rope = 0
+"let g:pymode_rope = 0
+let g:pymode_rope_completion = 0
 
 " don't open quickfix window for code errors
 let g:pymode_lint_cwindow=0
@@ -323,6 +325,7 @@ let g:pymode_doc_key = 'K'
 "Linting
 let g:pymode_lint = 1
 let g:pymode_lint_checker = "pyflakes,pep8"
+let g:pymode_lint_ignore = "E"
 " Auto check on save
 let g:pymode_lint_write = 1
 
@@ -353,6 +356,7 @@ let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","Snippets"]
+let g:ultisnips_python_style="sphinx"
 
 " ---- ULTISNIPS + YCM INTEGRATION ----
 "function! g:UltiSnips_Complete()
