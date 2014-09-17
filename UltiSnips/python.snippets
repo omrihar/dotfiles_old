@@ -10,3 +10,15 @@ endsnippet
 snippet assip "Asserts that the variable is a positive integer"
 assert isinstance(${1:var}, (int, long)) and $1 > 0 $0
 endsnippet
+
+snippet doco "Documentation with my name in it for scientific publications"
+"""
+${1:title}`!p snip.rv += "-" * len(t[1])`
+
+$2
+
+Written by Omri Har-Shemesh, University of Amsterdam
+
+"""
+$0
+endsnippet
