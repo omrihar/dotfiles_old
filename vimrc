@@ -23,7 +23,6 @@ Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-characterize'
 Bundle 'tpope/vim-eunuch'
 Bundle 'tpope/vim-speeddating'
-Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-sleuth'
 Bundle 'tpope/vim-obsession'
@@ -43,17 +42,20 @@ Bundle 'scrooloose/syntastic'
 Bundle 'mileszs/ack.vim'
 Bundle 'sjl/gundo.vim'
 Bundle 'klen/python-mode'
-Bundle 'juanpabloaj/ShowMarks'
+"Bundle 'juanpabloaj/ShowMarks'
 Bundle 'majutsushi/tagbar'
 Bundle 'jceb/vim-orgmode'
-Bundle 'tsaleh/vim-matchit'
+Bundle 'tmhedberg/matchit'
 Bundle 'SirVer/ultisnips'
+Bundle 'honza/vim-snippets'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'mattn/calendar-vim'
 Bundle 'rosenfeld/conque-term'
 "Bundle 'myusuf3/numbers.vim'
 Bundle 'vimoutliner/vimoutliner'
 Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'vim-pandoc/vim-pandoc-syntax'
+Bundle 'vim-scripts/RST-Tables'
 Bundle 'lambdalisue/shareboard.vim'
 
 " Autocomplete
@@ -103,9 +105,13 @@ nnoremap k gk
 nmap <CR> o<Esc>k
 nmap <S-CR> O<Esc>j
 
+nmap <leader>) ys$)
+
 " Make window navigation easy!
 set wmh=0
 set wmw=0
+
+set guifont=DejaVu\ Sans\ Mono\ 14
 
 " because it collides with c-j in vim-latex I only define it for non-tex files
 " TODO: find out how this can be achieved!
@@ -162,8 +168,6 @@ set ttyfast
 
 set laststatus=2
 
-" Toggle folding using '-'
-nnoremap - za
 
 "open .vimrc fast
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<CR>
@@ -210,7 +214,8 @@ if has('autocmd') && !exists("autocommands_loaded")
     au FocusLost * :silent! wa
 
     " Always use the ShowMarks plugin
-    au BufRead * ShowMarksOn
+    " Disabled this since it gave annoying warnings!
+    "au BufRead * ShowMarksOn
 
     " When editing a file, always jump to the last cursor position
     autocmd BufReadPost *
@@ -248,6 +253,20 @@ if has('autocmd') && !exists("autocommands_loaded")
     " Closes the scratch window after autocompletion has occurred.
     autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
     autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+
+
+    " This is a little shabby but I don't want the mapping in Fugitive Gstatus
+    " window
+    fun! DefineMyMinusMapping()
+        if exists('b:noMapping')
+            return
+        endif
+        " Toggle folding using '-'
+        nmap <buffer> - za
+    endfun
+
+    autocmd FileType conf let b:noMapping=1
+    autocmd BufEnter * call DefineMyMinusMapping()
 endif
 
 
@@ -311,7 +330,8 @@ endif
 " ]]            Jump on next class or function (normal, visual, operator modes)
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
-let g:pymode_rope = 0
+"let g:pymode_rope = 0
+let g:pymode_rope_completion = 0
 
 " don't open quickfix window for code errors
 let g:pymode_lint_cwindow=0
@@ -323,6 +343,7 @@ let g:pymode_doc_key = 'K'
 "Linting
 let g:pymode_lint = 1
 let g:pymode_lint_checker = "pyflakes,pep8"
+let g:pymode_lint_ignore = "E"
 " Auto check on save
 let g:pymode_lint_write = 1
 
@@ -353,6 +374,8 @@ let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","Snippets"]
+let g:ultisnips_python_style="sphinx"
+let g:UltiSnipsEditSplit="vertical"
 
 " ---- ULTISNIPS + YCM INTEGRATION ----
 "function! g:UltiSnips_Complete()
