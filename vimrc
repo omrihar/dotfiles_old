@@ -13,6 +13,7 @@ Bundle 'gmarik/vundle'
 " repos on github
 " ---- Color Themes ----
 Bundle 'tomasr/molokai'
+Bundle 'junegunn/seoul256.vim'
 "Bundle 'xoria256.vim'
 
 " ---- Tim Pope's plugins ----
@@ -43,6 +44,7 @@ Bundle 'mileszs/ack.vim'
 Bundle 'sjl/gundo.vim'
 Bundle 'klen/python-mode'
 "Bundle 'juanpabloaj/ShowMarks'
+Bundle 'mhinz/vim-signify'
 Bundle 'majutsushi/tagbar'
 Bundle 'jceb/vim-orgmode'
 Bundle 'tmhedberg/matchit'
@@ -81,14 +83,15 @@ Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 " ---- Distraction Free Writing ----
 Bundle 'junegunn/goyo.vim'
 Bundle 'junegunn/limelight.vim'
-Bundle 'junegunn/seoul256.vim'
 
 
 filetype plugin indent on
 
 " ---- COLOR THEME ----
 "colorscheme koehler
-silent! colorscheme molokai
+"silent! colorscheme molokai
+let g:seoul256_background=233
+silent! colorscheme seoul256
 
 " ---- EDITOR CONFIGURATION ---- "
 
@@ -432,8 +435,8 @@ let g:tex_conceal="adgm"
 " make  colors of conceal better fit Molokai (for some reason needs autocommand)
 "au FileType tex,pandoc hi Conceal guibg=#272822 guifg=#F8F8F2
 "au FileType tex,pandoc hi Folded guifg=#468eb3 guibg=#000000
-au FileType tex,pandoc let g:seoul256_background=233
-au FileType tex,pandoc colo seoul256
+"au FileType tex,pandoc let g:seoul256_background=233
+"au FileType tex,pandoc colo seoul256
 au FileType tex,pandoc Goyo
 
 " ---- VCSCOMMAND ---
