@@ -23,7 +23,6 @@ Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-characterize'
 Bundle 'tpope/vim-eunuch'
 Bundle 'tpope/vim-speeddating'
-Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-sleuth'
 Bundle 'tpope/vim-obsession'
@@ -43,17 +42,19 @@ Bundle 'scrooloose/syntastic'
 Bundle 'mileszs/ack.vim'
 Bundle 'sjl/gundo.vim'
 Bundle 'klen/python-mode'
-Bundle 'juanpabloaj/ShowMarks'
+"Bundle 'juanpabloaj/ShowMarks'
 Bundle 'majutsushi/tagbar'
 Bundle 'jceb/vim-orgmode'
-Bundle 'tsaleh/vim-matchit'
+Bundle 'tmhedberg/matchit'
 Bundle 'SirVer/ultisnips'
+Bundle 'honza/vim-snippets'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'mattn/calendar-vim'
 Bundle 'rosenfeld/conque-term'
 "Bundle 'myusuf3/numbers.vim'
 Bundle 'vimoutliner/vimoutliner'
 Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'vim-pandoc/vim-pandoc-syntax'
 Bundle 'vim-scripts/RST-Tables'
 Bundle 'lambdalisue/shareboard.vim'
 
@@ -76,6 +77,11 @@ Bundle 'vcscommand.vim'
 Bundle 'AutoClose'
 Bundle 'IndentAnything'
 Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+
+" ---- Distraction Free Writing ----
+Bundle 'junegunn/goyo.vim'
+Bundle 'junegunn/limelight.vim'
+Bundle 'junegunn/seoul256.vim'
 
 
 filetype plugin indent on
@@ -104,9 +110,14 @@ nnoremap k gk
 nmap <CR> o<Esc>k
 nmap <S-CR> O<Esc>j
 
+nmap <leader>) ys$)
+
 " Make window navigation easy!
 set wmh=0
 set wmw=0
+
+set guifont=DejaVu\ Sans\ Mono\ 14
+set guifont=CamingoCode\ 14
 
 " because it collides with c-j in vim-latex I only define it for non-tex files
 " TODO: find out how this can be achieved!
@@ -163,8 +174,6 @@ set ttyfast
 
 set laststatus=2
 
-" Toggle folding using '-'
-nnoremap - za
 
 "open .vimrc fast
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<CR>
@@ -211,7 +220,8 @@ if has('autocmd') && !exists("autocommands_loaded")
     au FocusLost * :silent! wa
 
     " Always use the ShowMarks plugin
-    au BufRead * ShowMarksOn
+    " Disabled this since it gave annoying warnings!
+    "au BufRead * ShowMarksOn
 
     " When editing a file, always jump to the last cursor position
     autocmd BufReadPost *
@@ -249,6 +259,24 @@ if has('autocmd') && !exists("autocommands_loaded")
     " Closes the scratch window after autocompletion has occurred.
     autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
     autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+
+
+    " This is a little shabby but I don't want the mapping in Fugitive Gstatus
+    " window
+    fun! DefineMyMinusMapping()
+        if exists('b:noMapping')
+            return
+        endif
+        " Toggle folding using '-'
+        nmap <buffer> - za
+    endfun
+
+    autocmd FileType conf let b:noMapping=1
+    autocmd BufEnter * call DefineMyMinusMapping()
+
+    "--- For Distraction-free writing ---
+    au User GoyoEnter Limelight
+    au User GoyoLeave Limelight!
 endif
 
 
@@ -256,9 +284,11 @@ endif
 
 " Tell vim-pandoc I use hard wraps
 "let g:pandoc_use_hard_wraps = 1
-let g:pandoc_auto_format = 1
-let g:pandoc_bibfiles = ['~/repos/writings/library.bib']
+let g:pandoc#biblio#bibs = ['/home/omri/repos/writings/library.bib']
+let g:pandoc#biblio#use_bibtool=1
+let g:pandoc#formatting#mode = 'h'
 let g:SuperTabDefaultCompletionType = "context"
+
 
 
 " Change shareboard port:
@@ -357,6 +387,10 @@ let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","Snippets"]
 let g:ultisnips_python_style="sphinx"
+let g:UltiSnipsEditSplit="vertical"
+
+" ---- YCM ----
+let g:ycm_filetype_blacklist={}
 
 " ---- ULTISNIPS + YCM INTEGRATION ----
 "function! g:UltiSnips_Complete()
@@ -396,8 +430,11 @@ let g:Tex_CompileRule_pdf = "/usr/bin/latexmk -e '$pdflatex=q/pdflatex -interact
 set cole=2
 let g:tex_conceal="adgm"
 " make  colors of conceal better fit Molokai (for some reason needs autocommand)
-au FileType tex,pandoc hi Conceal guibg=#272822 guifg=#F8F8F2
-au FileType tex,pandoc hi Folded guifg=#468eb3 guibg=#000000
+"au FileType tex,pandoc hi Conceal guibg=#272822 guifg=#F8F8F2
+"au FileType tex,pandoc hi Folded guifg=#468eb3 guibg=#000000
+au FileType tex,pandoc let g:seoul256_background=233
+au FileType tex,pandoc colo seoul256
+au FileType tex,pandoc Goyo
 
 " ---- VCSCOMMAND ---
 nnoremap <leader>d :VCSDiff<CR>
