@@ -13,11 +13,16 @@ endsnippet
 
 snippet doco "Documentation with my name in it for scientific publications"
 """
-${1:title}`!p snip.rv += "-" * len(t[1])`
+${1:title}
+`!p snip.rv += "-"*len(t[1])`
 
-$2
+$3
 
-Written by Omri Har-Shemesh, University of Amsterdam
+Written by 
+----------
+
+Omri Har-Shemesh, 
+University of Amsterdam
 
 """
 $0
