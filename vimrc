@@ -14,7 +14,6 @@ Bundle 'gmarik/vundle'
 " ---- Color Themes ----
 Bundle 'tomasr/molokai'
 Bundle 'junegunn/seoul256.vim'
-Bundle 'reedes/vim-colors-pencil'
 "Bundle 'xoria256.vim'
 
 " ---- Tim Pope's plugins ----
@@ -45,6 +44,7 @@ Bundle 'mileszs/ack.vim'
 Bundle 'sjl/gundo.vim'
 Bundle 'klen/python-mode'
 "Bundle 'juanpabloaj/ShowMarks'
+Bundle 'mhinz/vim-signify'
 Bundle 'majutsushi/tagbar'
 Bundle 'jceb/vim-orgmode'
 Bundle 'tmhedberg/matchit'
@@ -92,47 +92,14 @@ Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 Bundle 'junegunn/goyo.vim'
 Bundle 'junegunn/limelight.vim'
 
-"---- For Writing ----
-Bundle "reedes/vim-wordy"
-Bundle 'kana/vim-textobj-user'
-Bundle 'reedes/vim-textobj-sentence'
-
-Bundle 'terryma/vim-multiple-cursors'
-
-"---- For Unit Testing ----
-Bundle 'alfredodeza/pytest.vim'
-
-"---- For full screen toggle ----
-Bundle "lambdalisue/vim-fullscreen"
-
-Plugin 'file:///home/omri/.vim/bundle/HiLinkTrace'
-
-Bundle 'vim-scripts/toggle_words.vim'
 
 filetype plugin indent on
 
-" ---- COLOR SCHEME ----
-" Decide which color scheme to use based on file type and fonts, etc...
-fun! ChooseColorScheme()
-  if &ft =~ 'tex\|pandoc'
-    let g:pencil_higher_contrast_ui = 1
-    let g:pencil_neutral_code_bg = 1
-    let g:airline_theme='pencil'
-    colorscheme pencil
-    set background=light
-    hi Conceal guifg=#424242 guibg=#F1F1F1
-    set guifont=Cousine\ 14
-  else
-    let g:seoul256_background=233
-    colorscheme seoul256
-    set guifont=CamingoCode\ 14
-  endif
-endfun
-
+" ---- COLOR THEME ----
+"colorscheme koehler
+"silent! colorscheme molokai
 let g:seoul256_background=233
-colorscheme seoul256
-"set guifont=DejaVu\ Sans\ Mono\ 14
-set guifont=CamingoCode\ 14
+silent! colorscheme seoul256
 
 " ---- EDITOR CONFIGURATION ---- "
 
@@ -160,6 +127,8 @@ nmap <leader>) ys$)
 set wmh=0
 set wmw=0
 
+set guifont=DejaVu\ Sans\ Mono\ 14
+set guifont=CamingoCode\ 14
 
 " because it collides with c-j in vim-latex I only define it for non-tex files
 " TODO: find out how this can be achieved!
@@ -257,99 +226,70 @@ set clipboard=unnamedplus
 " Grouped together so they won't be defined twice. (see :help autocmd)
 
 if has('autocmd') && !exists("autocommands_loaded")
-  let autocommands_loaded = 1
+    let autocommands_loaded = 1
 
-  " Save the buffer on loose focus. The silent! command allows me not to know
-  " about files without a filename which cannot be saved using wa.
-  au FocusLost * :silent! wa
+    " Save the buffer on loose focus. The silent! command allows me not to know
+    " about files without a filename which cannot be saved using wa.
+    au FocusLost * :silent! wa
 
-  " Always use the ShowMarks plugin
-  " Disabled this since it gave annoying warnings!
-  "au BufRead * ShowMarksOn
+    " Always use the ShowMarks plugin
+    " Disabled this since it gave annoying warnings!
+    "au BufRead * ShowMarksOn
 
-  " When editing a file, always jump to the last cursor position
-  autocmd BufReadPost *
-    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-    \   exe "normal g'\"" |
-    \ endif
+    " When editing a file, always jump to the last cursor position
+    autocmd BufReadPost *
+      \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+      \   exe "normal g'\"" |
+      \ endif
+    
+    " To enable omnicomplete
+    " set omnifunc=syntaxcomplete#Complete
+    autocmd FileType python set omnifunc=pythoncomplete#Complete
+    "autocmd FileType python setlocal omnifunc=pysmell#Complete
+    autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType html set omnifunc=htmlcomplete#Complete
+    autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-  " To enable omnicomplete
-  " set omnifunc=syntaxcomplete#Complete
-  autocmd FileType python set omnifunc=pythoncomplete#Complete
-  "autocmd FileType python setlocal omnifunc=pysmell#Complete
-  autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-  autocmd FileType html set omnifunc=htmlcomplete#Complete
-  autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+    " To make shift-enter ignore the rest of the sentence (brackets) and
+    " ctrl-enter to do the same, but add : or ; depending on filetype
+    inoremap <s-CR> <Esc>o
+    let b:delimiter = ""
+    au FileType python let b:delimiter = ":"
+    au FileType javascript let b:delimiter = ";"
+    inoremap <c-CR> <Esc>A<c-r>=b:delimiter<CR><Esc>o
 
-  " To make shift-enter ignore the rest of the sentence (brackets) and
-  " ctrl-enter to do the same, but add : or ; depending on filetype
-  inoremap <s-CR> <Esc>o
-  let b:delimiter = ""
-  au FileType python let b:delimiter = ":"
-  au FileType javascript let b:delimiter = ";"
-  inoremap <c-CR> <Esc>A<c-r>=b:delimiter<CR><Esc>o
+    " Redefine some macros for vim-latex
+    augroup MyIMAPs
+        au!
+        au VimEnter * call IMAP('SSE', "\\section{<++>}\<CR><++>", "tex")
+        au VimEnter * call IMAP('SSS', "\\subsection{<++>}\<CR><++>", "tex")
+        au VimEnter * call IMAP('SS2', "\\subsubsection{<++>}\<CR><++>", "tex")
+    augroup END
 
-  " By default, open all python folds, but keep them defined.
-  au FileType python normal zR
+    " Turn off alt keys so that I can use them in vim-latex
+    au FileType *.tex set winaltkeys=no
 
-  " Redefine some macros for vim-latex
-  augroup MyIMAPs
-      au!
-      au VimEnter * call IMAP('SSE', "\\section{<++>}\<CR><++>", "tex")
-      au VimEnter * call IMAP('SSS', "\\subsection{<++>}\<CR><++>", "tex")
-      au VimEnter * call IMAP('SS2', "\\subsubsection{<++>}\<CR><++>", "tex")
-  augroup END
-
-  " Turn off alt keys so that I can use them in vim-latex
-  au FileType *.tex set winaltkeys=no
-
-  " Closes the scratch window after autocompletion has occurred.
-  autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
-  autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+    " Closes the scratch window after autocompletion has occurred.
+    autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
+    autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
 
 
-  " This is a little shabby but I don't want the mapping in Fugitive Gstatus
-  " window
-  fun! DefineMyMinusMapping()
-      if exists('b:noMapping')
-          return
-      endif
-      " Toggle folding using '-'
-      nmap <buffer> - za
-  endfun
+    " This is a little shabby but I don't want the mapping in Fugitive Gstatus
+    " window
+    fun! DefineMyMinusMapping()
+        if exists('b:noMapping')
+            return
+        endif
+        " Toggle folding using '-'
+        nmap <buffer> - za
+    endfun
 
-  autocmd FileType conf let b:noMapping=1
-  autocmd BufEnter * call DefineMyMinusMapping()
+    autocmd FileType conf let b:noMapping=1
+    autocmd BufEnter * call DefineMyMinusMapping()
 
-  "--- For Distraction-free writing ---
-  "au User GoyoEnter Limelight
-  "au User GoyoLeave Limelight!
-  au FileType * call ChooseColorScheme()
-  "au FileType tex,pandoc Goyo 90
-
-  function! s:goyo_enter()
-    let b:quitting = 0
-    let b:quitting_bang = 0
-    autocmd QuitPre <buffer> let b:quitting = 1
-    cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
-  endfunction
-
-  function! s:goyo_leave()
-    " Quit Vim if this is the only remaining buffer
-    if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
-      if b:quitting_bang
-        qa!
-      else
-        qa
-      endif
-    endif
-  endfunction
-
-  autocmd User GoyoEnter nested call <SID>goyo_enter()
-  autocmd User GoyoLeave nested call <SID>goyo_leave()
-  " Make vim stop beeping
-  set noeb vb t_vb=
-  au GUIEnter * set vb t_vb=
+    "--- For Distraction-free writing ---
+    au User GoyoEnter Limelight
+    au User GoyoLeave Limelight!
 endif
 
 " ---- PLUGIN CONFIGURATION ----
@@ -481,7 +421,7 @@ let g:ultisnips_python_style="google"
 let g:UltiSnipsEditSplit="vertical"
 
 " ---- YCM ----
-"let g:ycm_filetype_blacklist={}
+let g:ycm_filetype_blacklist={}
 
 " ---- ULTISNIPS + YCM INTEGRATION ----
 "function! g:UltiSnips_Complete()
@@ -532,9 +472,8 @@ let g:tex_conceal="adgm"
 "au FileType tex,pandoc hi Conceal guibg=#272822 guifg=#F8F8F2
 "au FileType tex,pandoc hi Folded guifg=#468eb3 guibg=#000000
 "au FileType tex,pandoc let g:seoul256_background=233
-"au FileType tex,pandoc hi Conceal guifg=#424242 guibg=#F1F1F1
-"au FileType tex,pandoc set guifont=Cousine\ 14
-
+"au FileType tex,pandoc colo seoul256
+au FileType tex,pandoc Goyo
 
 " ---- VCSCOMMAND ---
 nnoremap <leader>d :VCSDiff<CR>
