@@ -13,6 +13,8 @@ Bundle 'gmarik/vundle'
 " repos on github
 " ---- Color Themes ----
 Bundle 'tomasr/molokai'
+Bundle 'junegunn/seoul256.vim'
+Bundle 'reedes/vim-colors-pencil'
 "Bundle 'xoria256.vim'
 
 " ---- Tim Pope's plugins ----
@@ -58,6 +60,13 @@ Bundle 'vim-pandoc/vim-pandoc-syntax'
 Bundle 'vim-scripts/RST-Tables'
 Bundle 'lambdalisue/shareboard.vim'
 
+" Marks of diffs
+Bundle 'mhinz/vim-signify'
+
+" Statusline
+"Bundle 'Lokaltog/powerline'
+Bundle 'bling/vim-airline'
+
 " Autocomplete
 Bundle 'Valloric/YouCompleteMe'
 "Bundle 'davidhalter/jedi-vim'
@@ -70,6 +79,7 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'walm/jshint.vim'
 
+
 " ---- plugins not from GitHub ---- 
 Bundle 'Align'
 Bundle 'utl.vim'
@@ -78,12 +88,51 @@ Bundle 'AutoClose'
 Bundle 'IndentAnything'
 Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 
+" ---- Distraction Free Writing ----
+Bundle 'junegunn/goyo.vim'
+Bundle 'junegunn/limelight.vim'
+
+"---- For Writing ----
+Bundle "reedes/vim-wordy"
+Bundle 'kana/vim-textobj-user'
+Bundle 'reedes/vim-textobj-sentence'
+
+Bundle 'terryma/vim-multiple-cursors'
+
+"---- For Unit Testing ----
+Bundle 'alfredodeza/pytest.vim'
+
+"---- For full screen toggle ----
+Bundle "lambdalisue/vim-fullscreen"
+
+Plugin 'file:///home/omri/.vim/bundle/HiLinkTrace'
+
+Bundle 'vim-scripts/toggle_words.vim'
 
 filetype plugin indent on
 
-" ---- COLOR THEME ----
-"colorscheme koehler
-silent! colorscheme molokai
+" ---- COLOR SCHEME ----
+" Decide which color scheme to use based on file type and fonts, etc...
+fun! ChooseColorScheme()
+  if &ft =~ 'tex\|pandoc'
+    let g:pencil_higher_contrast_ui = 1
+    let g:pencil_neutral_code_bg = 1
+    let g:airline_theme='pencil'
+    colorscheme pencil
+    set background=light
+    hi Conceal guifg=#424242 guibg=#F1F1F1
+    set guifont=Cousine\ 14
+  else
+    let g:seoul256_background=233
+    colorscheme seoul256
+    set guifont=CamingoCode\ 14
+  endif
+endfun
+
+let g:seoul256_background=233
+colorscheme seoul256
+"set guifont=DejaVu\ Sans\ Mono\ 14
+set guifont=CamingoCode\ 14
 
 " ---- EDITOR CONFIGURATION ---- "
 
@@ -111,7 +160,6 @@ nmap <leader>) ys$)
 set wmh=0
 set wmw=0
 
-set guifont=DejaVu\ Sans\ Mono\ 14
 
 " because it collides with c-j in vim-latex I only define it for non-tex files
 " TODO: find out how this can be achieved!
@@ -168,6 +216,8 @@ set ttyfast
 
 set laststatus=2
 
+" Disable ex mode - never use it and its confusing
+map Q <Nop>
 
 "open .vimrc fast
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<CR>
@@ -189,10 +239,10 @@ set spelllang=en
 
 " Mappings and options for diff
 if &diff
-    set diffopt+=iwhite
-    map <leader>1 :diffget LOCAL<CR>
-    map <leader>2 :diffget BASE<CR>
-    map <leader>3 :diffget REMOTE<CR>
+  set diffopt+=iwhite
+  map <leader>1 :diffget LOCAL<CR>
+  map <leader>2 :diffget BASE<CR>
+  map <leader>3 :diffget REMOTE<CR>
 endif
 
 " Vimcast #1: show invisibles
@@ -207,76 +257,110 @@ set clipboard=unnamedplus
 " Grouped together so they won't be defined twice. (see :help autocmd)
 
 if has('autocmd') && !exists("autocommands_loaded")
-    let autocommands_loaded = 1
+  let autocommands_loaded = 1
 
-    " Save the buffer on loose focus. The silent! command allows me not to know
-    " about files without a filename which cannot be saved using wa.
-    au FocusLost * :silent! wa
+  " Save the buffer on loose focus. The silent! command allows me not to know
+  " about files without a filename which cannot be saved using wa.
+  au FocusLost * :silent! wa
 
-    " Always use the ShowMarks plugin
-    " Disabled this since it gave annoying warnings!
-    "au BufRead * ShowMarksOn
+  " Always use the ShowMarks plugin
+  " Disabled this since it gave annoying warnings!
+  "au BufRead * ShowMarksOn
 
-    " When editing a file, always jump to the last cursor position
-    autocmd BufReadPost *
-      \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-      \   exe "normal g'\"" |
-      \ endif
-    
-    " To enable omnicomplete
-    " set omnifunc=syntaxcomplete#Complete
-    autocmd FileType python set omnifunc=pythoncomplete#Complete
-    "autocmd FileType python setlocal omnifunc=pysmell#Complete
-    autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType html set omnifunc=htmlcomplete#Complete
-    autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+  " When editing a file, always jump to the last cursor position
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+    \   exe "normal g'\"" |
+    \ endif
 
-    " To make shift-enter ignore the rest of the sentence (brackets) and
-    " ctrl-enter to do the same, but add : or ; depending on filetype
-    inoremap <s-CR> <Esc>o
-    let b:delimiter = ""
-    au FileType python let b:delimiter = ":"
-    au FileType javascript let b:delimiter = ";"
-    inoremap <c-CR> <Esc>A<c-r>=b:delimiter<CR><Esc>o
+  " To enable omnicomplete
+  " set omnifunc=syntaxcomplete#Complete
+  autocmd FileType python set omnifunc=pythoncomplete#Complete
+  "autocmd FileType python setlocal omnifunc=pysmell#Complete
+  autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType html set omnifunc=htmlcomplete#Complete
+  autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
-    " Redefine some macros for vim-latex
-    augroup MyIMAPs
-        au!
-        au VimEnter * call IMAP('SSE', "\\section{<++>}\<CR><++>", "tex")
-        au VimEnter * call IMAP('SSS', "\\subsection{<++>}\<CR><++>", "tex")
-        au VimEnter * call IMAP('SS2', "\\subsubsection{<++>}\<CR><++>", "tex")
-    augroup END
+  " To make shift-enter ignore the rest of the sentence (brackets) and
+  " ctrl-enter to do the same, but add : or ; depending on filetype
+  inoremap <s-CR> <Esc>o
+  let b:delimiter = ""
+  au FileType python let b:delimiter = ":"
+  au FileType javascript let b:delimiter = ";"
+  inoremap <c-CR> <Esc>A<c-r>=b:delimiter<CR><Esc>o
 
-    " Turn off alt keys so that I can use them in vim-latex
-    au FileType *.tex set winaltkeys=no
+  " By default, open all python folds, but keep them defined.
+  au FileType python normal zR
 
-    " Closes the scratch window after autocompletion has occurred.
-    autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
-    autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+  " Redefine some macros for vim-latex
+  augroup MyIMAPs
+      au!
+      au VimEnter * call IMAP('SSE', "\\section{<++>}\<CR><++>", "tex")
+      au VimEnter * call IMAP('SSS', "\\subsection{<++>}\<CR><++>", "tex")
+      au VimEnter * call IMAP('SS2', "\\subsubsection{<++>}\<CR><++>", "tex")
+  augroup END
+
+  " Turn off alt keys so that I can use them in vim-latex
+  au FileType *.tex set winaltkeys=no
+
+  " Closes the scratch window after autocompletion has occurred.
+  autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
+  autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
 
 
-    " This is a little shabby but I don't want the mapping in Fugitive Gstatus
-    " window
-    fun! DefineMyMinusMapping()
-        if exists('b:noMapping')
-            return
-        endif
-        " Toggle folding using '-'
-        nmap <buffer> - za
-    endfun
+  " This is a little shabby but I don't want the mapping in Fugitive Gstatus
+  " window
+  fun! DefineMyMinusMapping()
+      if exists('b:noMapping')
+          return
+      endif
+      " Toggle folding using '-'
+      nmap <buffer> - za
+  endfun
 
-    autocmd FileType conf let b:noMapping=1
-    autocmd BufEnter * call DefineMyMinusMapping()
+  autocmd FileType conf let b:noMapping=1
+  autocmd BufEnter * call DefineMyMinusMapping()
+
+  "--- For Distraction-free writing ---
+  "au User GoyoEnter Limelight
+  "au User GoyoLeave Limelight!
+  au FileType * call ChooseColorScheme()
+  "au FileType tex,pandoc Goyo 90
+
+  function! s:goyo_enter()
+    let b:quitting = 0
+    let b:quitting_bang = 0
+    autocmd QuitPre <buffer> let b:quitting = 1
+    cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
+  endfunction
+
+  function! s:goyo_leave()
+    " Quit Vim if this is the only remaining buffer
+    if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
+      if b:quitting_bang
+        qa!
+      else
+        qa
+      endif
+    endif
+  endfunction
+
+  autocmd User GoyoEnter nested call <SID>goyo_enter()
+  autocmd User GoyoLeave nested call <SID>goyo_leave()
+  " Make vim stop beeping
+  set noeb vb t_vb=
+  au GUIEnter * set vb t_vb=
 endif
-
 
 " ---- PLUGIN CONFIGURATION ----
 
 " Tell vim-pandoc I use hard wraps
 "let g:pandoc_use_hard_wraps = 1
-let g:pandoc_auto_format = 1
-let g:pandoc_bibfiles = ['~/repos/writings/library.bib']
+let g:pandoc#biblio#bibs = ['/home/omri/repos/writings/library.bib']
+let g:pandoc#biblio#use_bibtool=1
+let g:pandoc#formatting#mode = 'h'
 let g:SuperTabDefaultCompletionType = "context"
+
 
 
 " Change shareboard port:
@@ -286,31 +370,50 @@ let g:shareboard_port = 8082
 " Ack - tell Ack which program to use
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"
 
+" Toggle real fullscreen (no buttons and menu)
+"function ToggleFullScreen()
+  "call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")
+  ""if &guioptions =~# 'm'
+      ""set guioptions-=m
+      ""set guioptions-=r
+      """set guioptions-=T
+  ""else
+      ""set guioptions+=m
+      ""set guioptions+=r
+      """set guioptions+=T
+  ""endif
+"endfunction
+
+" By default, don't need the buttons in the top row
+set guioptions-=T
+set guioptions-=m
+set guioptions-=r
+set guioptions-=L
+
 " Quick call plugins (F button mappings)
 map               <F2> :NERDTreeToggle <CR>
+nnoremap          <F3> :GundoToggle<CR>
+nnoremap          <F4> :ToggleWord<CR>  
 noremap           <F5> :RainbowParenthesesToggle <CR>
 map               <F6> :Gstatus<CR>
 map               <leader>f :Gstatus<CR>
 nnoremap<silent>  <F7> :TagbarToggle<CR>
 nnoremap          <F9> :set wrap!<CR>
 inoremap          <F9> <Esc>:set wrap! <CR>a
+map <silent>      <F11> :FullscreenToggle<CR>
 
-" Gundo plugin can only work with vim > 7.2
-if v:version > 702
-    " Add keymapping for gundo plugin
-    nnoremap <F3> :GundoToggle<CR>
-    let g:gundo_preview_bottom=1
-    set undofile
-    set colorcolumn=85
-endif
+" Definitions to make gundo work
+let g:gundo_preview_bottom=1
+set undofile
+set colorcolumn=85
 
 " ---- PYMODE OPTIONS ----
 " disable python folding
-"let g:pymode_folding=1
+"let g:pymode_folding=0
 " open a new split when going to definition
 "let g:pymode_rope_goto_def_newwin="new"
 " disable rope
-"let g:pymode_rope=0
+let g:pymode_rope=0
 "let g:pymode_doc=1
 "let g:pymode_key='K'
 "let g:pymode_lint=1
@@ -374,8 +477,11 @@ let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","Snippets"]
-let g:ultisnips_python_style="sphinx"
+let g:ultisnips_python_style="google"
 let g:UltiSnipsEditSplit="vertical"
+
+" ---- YCM ----
+"let g:ycm_filetype_blacklist={}
 
 " ---- ULTISNIPS + YCM INTEGRATION ----
 "function! g:UltiSnips_Complete()
@@ -400,6 +506,11 @@ let g:UltiSnipsEditSplit="vertical"
 " YCM Binding for jumping to definition
 nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
+" Adding a latex completer for cite and ref commands to YCM.
+let g:ycm_semantic_triggers = {
+\   'tex': ['\ref{', '\cite{'],
+\ }
+
 " ---- VIM-LATEX ----
 let g:tex_flavor='latex'
 set grepprg=grep\ -nH\ $*
@@ -411,12 +522,19 @@ let g:Tex_MultipleCompileFormats = 'pdf, aux'
 let g:Tex_ViewRule_pdf = 'okular'
 let g:Tex_CompileRule_pdf = "/usr/bin/latexmk -e '$pdflatex=q/pdflatex -interaction=nonstopmode -file-line-error -hatl-on-error -synctex=1/' -pdf -bibtex $*"
 
+" Make the ctrl-j mapping be c-space instead
+imap <C-space> <Plug>IMAP_JumpForward
+
 " Make cool replacement of latex symbols with Unicode ones!
 set cole=2
 let g:tex_conceal="adgm"
 " make  colors of conceal better fit Molokai (for some reason needs autocommand)
-au FileType tex,pandoc hi Conceal guibg=#272822 guifg=#F8F8F2
-au FileType tex,pandoc hi Folded guifg=#468eb3 guibg=#000000
+"au FileType tex,pandoc hi Conceal guibg=#272822 guifg=#F8F8F2
+"au FileType tex,pandoc hi Folded guifg=#468eb3 guibg=#000000
+"au FileType tex,pandoc let g:seoul256_background=233
+"au FileType tex,pandoc hi Conceal guifg=#424242 guibg=#F1F1F1
+"au FileType tex,pandoc set guifont=Cousine\ 14
+
 
 " ---- VCSCOMMAND ---
 nnoremap <leader>d :VCSDiff<CR>

@@ -21,9 +21,37 @@ $3
 Written by 
 ----------
 
-Omri Har-Shemesh, 
+Omri Har-Shemesh,
 University of Amsterdam
 
 """
 $0
 endsnippet
+
+snippet com "A cool comment with underline used as separator"
+# ${1:Comment}
+# `!p snip.rv += "-" * len(t[1])`
+$0
+endsnippet
+
+snippet imps "My standard cool imports"
+from __future__ import print_function, division
+
+# Standard imports
+import numpy as np
+import scipy as sp
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+$0
+endsnippet
+
+snippet gtk_win "Create a standard GTK+3 window and connect it to delete event"
+${1:win} = Gtk.Window()
+
+$1.connect("delete-event", Gtk.main_quit)
+$1.show_all()
+Gtk.main()
+endsnippet
+
