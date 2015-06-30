@@ -50,6 +50,9 @@ cd ~/.vim/bundle/tern_for_vim
 npm install
 ```
 
+Matplotlib setup
+------------------
+
 To use the matplotlib style included here, place a symlink in 
 ```~/.config/matplotlib/stylelib/``` to it.
 Then use 
