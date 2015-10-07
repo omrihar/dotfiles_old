@@ -140,12 +140,17 @@ export PS1='\e[1;36m$(__git_ps1 " [%s]")\e[m\e[1;32m \w \e[m\$ '
 # Tell python to load stuff in this script on startup
 export PYTHONSTARTUP=~/.pythonrc
 
-export PATH=$HOME/repos/writings:$HOME/simulation:~/bin:~/.cabal/bin:~/scripts:~/Dropbox/scripts:~/Downloads/hdf-java-2.10/usr/bin:$PATH
+export PATH=$HOME/.gem/ruby/2.2.0/bin:$HOME/repos/coursera:$HOME/repos/writings:$HOME/simulation:~/bin:~/.cabal/bin:~/scripts:~/Dropbox/scripts:~/Downloads/hdf-java-2.10/usr/bin:$PATH
+export PATH=$HOME/neovim/bin:$HOME/repos/wallpaper-switch:$PATH
+export VMAIL_VIM=gvim
+export GOPATH=$HOME/repos/gosource
 
 alias android-connect="mtpfs -o allow_other /media/Galaxy"
 alias android-disconnect="fusermount -u /media/Galaxy"
 
 alias pg='ps aux | grep -v grep | grep --color=auto '
+alias vphd='VMAIL_HOME=$HOME/.vmail/phd vmail'
+alias wg='wget www.google.com'
 
 function editmd() { 
     gvim $@ ; 
@@ -159,8 +164,8 @@ _editmd(){
 complete -F _editmd editmd
 
 function editlt() { 
-    gvim $@ ; 
-    latexmk -pvc -pdf $@ ; 
+    svim -G $@ ; 
+    latexmk -pvc -pdf -synctex=1 $@ ; 
 }
 
 _editlt(){
@@ -168,4 +173,8 @@ _editlt(){
     COMPREPLY=( $(compgen -G "$cur*.tex" -- $cur) )
 }
 complete -F _editlt editlt
+
+hgrep () { 
+    history | egrep --color=auto "$@" | grep --color=auto -v 'hgrep "$@"'
+}
 

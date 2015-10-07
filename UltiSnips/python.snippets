@@ -12,19 +12,51 @@ assert isinstance(${1:var}, (int, long)) and $1 > 0 $0
 endsnippet
 
 snippet doco "Documentation with my name in it for scientific publications"
-"""
-${1:title}
-`!p snip.rv += "-"*len(t[1])`
+'''
+${1:file.py} (v0.1)
 
-$3
+Written by:
+    Omri Har-Shemesh, Computational Science Lab, University of Amsterdam
+    O.HarShemesh@uva.nl
 
-Written by 
-----------
+Last updated on $2
 
-Omri Har-Shemesh,
-University of Amsterdam
+Description:
+    $3
 
-"""
+References:
+    $4
+
+Functions:
+    $5
+
+Dependencies:
+    $6
+
+License:
+    The MIT License (MIT)
+
+    Copyright (c) 2015 Omri Har-Shemesh
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+'''
 $0
 endsnippet
 
@@ -40,9 +72,12 @@ from __future__ import print_function, division
 # Standard imports
 import numpy as np
 import scipy as sp
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import cPickle as pickle
+import time
+
+import os
+import sys
 
 $0
 endsnippet

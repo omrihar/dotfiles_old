@@ -52,16 +52,19 @@ Bundle 'SirVer/ultisnips'
 Bundle 'honza/vim-snippets'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'mattn/calendar-vim'
-Bundle 'rosenfeld/conque-term'
+"Bundle 'rosenfeld/conque-term'
 "Bundle 'myusuf3/numbers.vim'
 Bundle 'vimoutliner/vimoutliner'
 Bundle 'vim-pandoc/vim-pandoc'
 Bundle 'vim-pandoc/vim-pandoc-syntax'
 Bundle 'vim-scripts/RST-Tables'
-Bundle 'lambdalisue/shareboard.vim'
+"Bundle 'lambdalisue/shareboard.vim'
 
 " Marks of diffs
 Bundle 'mhinz/vim-signify'
+
+" Merge tool
+Bundle "sjl/splice.vim"
 
 " Statusline
 "Bundle 'Lokaltog/powerline'
@@ -105,27 +108,36 @@ Bundle 'alfredodeza/pytest.vim'
 "---- For full screen toggle ----
 Bundle "lambdalisue/vim-fullscreen"
 
-Plugin 'file:///home/omri/.vim/bundle/HiLinkTrace'
+"Plugin 'file:///home/omri/.vim/bundle/HiLinkTrace'
 
 Bundle 'vim-scripts/toggle_words.vim'
+
+Bundle 'embear/vim-foldsearch'
+
+Bundle 'vifm/vifm.vim'
 
 filetype plugin indent on
 
 " ---- COLOR SCHEME ----
 " Decide which color scheme to use based on file type and fonts, etc...
+" Once a colorscheme is set, it should not be changed when creating new
+" windows, etc... It can be very annoying when using, e.g. :h
 fun! ChooseColorScheme()
-  if &ft =~ 'tex\|pandoc'
-    let g:pencil_higher_contrast_ui = 1
-    let g:pencil_neutral_code_bg = 1
-    let g:airline_theme='pencil'
-    colorscheme pencil
-    set background=light
-    hi Conceal guifg=#424242 guibg=#F1F1F1
-    set guifont=Cousine\ 14
-  else
-    let g:seoul256_background=233
-    colorscheme seoul256
-    set guifont=CamingoCode\ 14
+  if !exists("g:colorscheme_set")
+    let g:colorscheme_set=1
+    if &ft =~ 'tex\|pandoc'
+      let g:pencil_higher_contrast_ui = 1
+      let g:pencil_neutral_code_bg = 1
+      let g:airline_theme='pencil'
+      colorscheme pencil
+      set background=light
+      hi Conceal guifg=#424242 guibg=#F1F1F1
+      set guifont=Cousine\ 14
+    else
+      let g:seoul256_background=233
+      colorscheme seoul256
+      set guifont=CamingoCode\ 14
+    endif
   endif
 endfun
 
@@ -133,6 +145,10 @@ let g:seoul256_background=233
 colorscheme seoul256
 "set guifont=DejaVu\ Sans\ Mono\ 14
 set guifont=CamingoCode\ 14
+
+" Vifm setup
+let g:vifm_term="gnome-terminal --disable-factory -x"
+"let g:vifm_term="xterm -e "
 
 " ---- EDITOR CONFIGURATION ---- "
 
@@ -160,6 +176,8 @@ nmap <leader>) ys$)
 set wmh=0
 set wmw=0
 
+" When opening anew document - keep all folds open
+let foldlevelstart=99
 
 " because it collides with c-j in vim-latex I only define it for non-tex files
 " TODO: find out how this can be achieved!
@@ -252,6 +270,29 @@ set listchars=tab:▸\ ,eol:¬
 " the clipboard
 set clipboard=unnamedplus
 
+" To display the difference in word count since beginning of editing
+" session.
+function! WordCount()
+  let s:old_status = v:statusmsg
+  let position = getpos(".")
+  exe ":silent normal g\<c-g>"
+  let stat = v:statusmsg
+  let s:word_count = 0
+  if stat != '--No lines in buffer--'
+    let s:word_count = str2nr(split(v:statusmsg)[11])
+    let v:statusmsg = s:old_status
+  end
+  call setpos('.', position)
+  if exists("b:original_wc")
+    let s:word_count =  s:word_count - b:original_wc
+  else
+    let b:original_wc = s:word_count
+  endif
+  return "wc diff: " . s:word_count 
+endfunction
+
+call airline#parts#define_function('wc', 'WordCount')
+
 
 " ---- DEFINE SOME AUTOCOMMANDS ----
 " Grouped together so they won't be defined twice. (see :help autocmd)
@@ -276,6 +317,7 @@ if has('autocmd') && !exists("autocommands_loaded")
   " To enable omnicomplete
   " set omnifunc=syntaxcomplete#Complete
   autocmd FileType python set omnifunc=pythoncomplete#Complete
+  autocmd FileType python set foldlevelstart=99
   "autocmd FileType python setlocal omnifunc=pysmell#Complete
   autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
   autocmd FileType html set omnifunc=htmlcomplete#Complete
@@ -302,6 +344,17 @@ if has('autocmd') && !exists("autocommands_loaded")
 
   " Turn off alt keys so that I can use them in vim-latex
   au FileType *.tex set winaltkeys=no
+
+  au FileType tex,md let g:airline_section_z = airline#section#create(['wc'])
+
+" For synctex support
+"function! Synctex()
+  ""execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . " " g:syncpdf
+  "execute "!vimura %:r.pdf" line('.') col('.') "%> /dev/null" <cr>
+"endfunction
+"map <F8> :call Synctex()<cr>
+nnoremap <F8>  :exec "!vimura %:r.pdf --synctex-forward" line('.')  col('.') "% > /dev/null"<cr><cr>
+
 
   " Closes the scratch window after autocompletion has occurred.
   autocmd CursorMovedI *  if pumvisible() == 0|silent! pclose|endif
@@ -350,6 +403,7 @@ if has('autocmd') && !exists("autocommands_loaded")
   " Make vim stop beeping
   set noeb vb t_vb=
   au GUIEnter * set vb t_vb=
+  au VimEnter tex Goyo 90
 endif
 
 " ---- PLUGIN CONFIGURATION ----
@@ -393,23 +447,23 @@ set guioptions-=L
 " Quick call plugins (F button mappings)
 map               <F2> :NERDTreeToggle <CR>
 nnoremap          <F3> :GundoToggle<CR>
-nnoremap          <F4> :ToggleWord<CR>  
+nnoremap          <F4> :ToggleWord<CR> 
 noremap           <F5> :RainbowParenthesesToggle <CR>
 map               <F6> :Gstatus<CR>
 map               <leader>f :Gstatus<CR>
 nnoremap<silent>  <F7> :TagbarToggle<CR>
 nnoremap          <F9> :set wrap!<CR>
 inoremap          <F9> <Esc>:set wrap! <CR>a
-map <silent>      <F11> :FullscreenToggle<CR>
+map <silent>      <F12> :FullscreenToggle<CR>
 
 " Definitions to make gundo work
 let g:gundo_preview_bottom=1
 set undofile
-set colorcolumn=85
+set colorcolumn=80
 
 " ---- PYMODE OPTIONS ----
 " disable python folding
-"let g:pymode_folding=0
+let g:pymode_folding=0
 " open a new split when going to definition
 "let g:pymode_rope_goto_def_newwin="new"
 " disable rope
@@ -464,7 +518,7 @@ let g:pymode_syntax_indent_errors = g:pymode_syntax_all
 let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
 " Don't autofold code
-let g:pymode_folding = 0
+"let g:pymode_folding = 0
 
 
 " ---- EASY MOTION ----
