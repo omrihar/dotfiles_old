@@ -13,13 +13,13 @@ endsnippet
 
 snippet doco "Documentation with my name in it for scientific publications"
 '''
-${1:file.py} (v0.1)
+${1:`!p snip.rv=snip.fn`} (v0.1)
 
 Written by:
     Omri Har-Shemesh, Computational Science Lab, University of Amsterdam
     O.HarShemesh@uva.nl
 
-Last updated on $2
+Last updated on `!p import time; snip.rv = time.strftime("%d %B %Y") `
 
 Description:
     $3
@@ -57,6 +57,7 @@ License:
     SOFTWARE.
 
 '''
+from __future__ import print_function, division
 $0
 endsnippet
 
@@ -66,7 +67,7 @@ snippet com "A cool comment with underline used as separator"
 $0
 endsnippet
 
-snippet imps "My standard cool imports"
+snippet imps "My standard imports"
 from __future__ import print_function, division
 
 # Standard imports
