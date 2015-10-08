@@ -39,3 +39,11 @@ snippet comm "Add an HTML comment area" !i
 -->
 $0
 endsnippet
+
+snippet subfig "Adds a subfigure using subcaption"
+  \begin{subfigure}[t]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{$1}
+    \caption{$2}\label{fig:$3}
+  \end{subfigure}
+  $0
+endsnippet
