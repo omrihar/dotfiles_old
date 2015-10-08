@@ -178,3 +178,4 @@ hgrep () {
     history | egrep --color=auto "$@" | grep --color=auto -v 'hgrep "$@"'
 }
 
+export EDITOR=gvim

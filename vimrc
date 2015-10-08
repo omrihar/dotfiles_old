@@ -422,7 +422,7 @@ let g:shareboard_port = 8082
 
 
 " Ack - tell Ack which program to use
-let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+let g:ackprg="ack -H --nocolor --nogroup --column"
 
 " Toggle real fullscreen (no buttons and menu)
 "function ToggleFullScreen()
