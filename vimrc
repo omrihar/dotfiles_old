@@ -15,6 +15,7 @@ Bundle 'gmarik/vundle'
 Bundle 'tomasr/molokai'
 Bundle 'junegunn/seoul256.vim'
 Bundle 'reedes/vim-colors-pencil'
+Bundle 'tabpagecolorscheme'
 "Bundle 'xoria256.vim'
 
 " ---- Tim Pope's plugins ----
@@ -24,18 +25,28 @@ Bundle 'tpope/vim-unimpaired'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-characterize'
 Bundle 'tpope/vim-eunuch'
-Bundle 'tpope/vim-speeddating'
+"Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-sleuth'
 Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-abolish'
 
 " ---- Other Plugins on GitHub -----
-Bundle 'kien/ctrlp.vim'
-Bundle 'jasoncodes/ctrlp-modified.vim'
-Bundle 'tacahiroy/ctrlp-funky'
-Bundle 'sgur/ctrlp-extensions.vim'
-Bundle 'ivalkeen/vim-ctrlp-tjump'
+Bundle 'Shougo/unite.vim'
+Bundle 'Shougo/unite-outline'
+Bundle 'Shougo/neomru.vim'
+Bundle 'Shougo/neoinclude.vim'
+Bundle 'Shougo/vimproc.vim'
+Bundle 'tsukkee/unite-help'
+Bundle 'tsukkee/unite-tag'
+Bundle 'tacroe/unite-mark'
+Bundle 'ujihisa/unite-launch'
+Bundle 'thinca/vim-quickrun'
+"Bundle 'kien/ctrlp.vim'
+"Bundle 'jasoncodes/ctrlp-modified.vim'
+"Bundle 'tacahiroy/ctrlp-funky'
+"Bundle 'sgur/ctrlp-extensions.vim'
+"Bundle 'ivalkeen/vim-ctrlp-tjump'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 Bundle 'scrooloose/nerdtree'
@@ -89,7 +100,8 @@ Bundle 'utl.vim'
 Bundle 'vcscommand.vim'
 Bundle 'AutoClose'
 Bundle 'IndentAnything'
-Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+"Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+Bundle 'lervag/vimtex'
 
 " ---- Distraction Free Writing ----
 Bundle 'junegunn/goyo.vim'
@@ -114,7 +126,7 @@ Bundle 'vim-scripts/toggle_words.vim'
 
 Bundle 'embear/vim-foldsearch'
 
-Bundle 'vifm/vifm.vim'
+"Bundle 'vifm/vifm.vim'
 
 filetype plugin indent on
 
@@ -125,7 +137,7 @@ filetype plugin indent on
 fun! ChooseColorScheme()
   if !exists("g:colorscheme_set")
     let g:colorscheme_set=1
-    if &ft =~ 'tex\|pandoc'
+    if &ft =~ 'tex\|pandoc\|markdown'
       let g:pencil_higher_contrast_ui = 1
       let g:pencil_neutral_code_bg = 1
       let g:airline_theme='pencil'
@@ -146,8 +158,30 @@ colorscheme seoul256
 "set guifont=DejaVu\ Sans\ Mono\ 14
 set guifont=CamingoCode\ 14
 
+fun! CDToCurrentFile()
+  exec ":cd %:p:h"
+endfun
+
+autocmd BufEnter * silent! lcd %:p:h
+
+" ---------------- Unite setup -----------------------------------
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+call unite#custom#source('file,file/new,buffer,file_rec,line', 'matchers', 'matcher_fuzzy')
+let g:unite_source_history_yank_enable = 1
+nnoremap <C-k> :<C-u>Unite -buffer-name=search -start-insert line<cr>
+nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async<cr>
+nnoremap <C-h> :<C-u>Unite outline<cr>
+
+let g:unite_launch_apps = [
+  \ 'gl',
+  \ 'git status',
+  \ 'git pull',
+  \ 'git push' ]
+
+
 " Vifm setup
-let g:vifm_term="gnome-terminal --disable-factory -x"
+"let g:vifm_term="gnome-terminal --disable-factory -x"
 "let g:vifm_term="xterm -e "
 
 " ---- EDITOR CONFIGURATION ---- "
@@ -335,15 +369,18 @@ if has('autocmd') && !exists("autocommands_loaded")
   au FileType python normal zR
 
   " Redefine some macros for vim-latex
-  augroup MyIMAPs
-      au!
-      au VimEnter * call IMAP('SSE', "\\section{<++>}\<CR><++>", "tex")
-      au VimEnter * call IMAP('SSS', "\\subsection{<++>}\<CR><++>", "tex")
-      au VimEnter * call IMAP('SS2', "\\subsubsection{<++>}\<CR><++>", "tex")
-  augroup END
+  " UNDO TO USE VIM-LATEX
+  "augroup MyIMAPs
+      "au!
+      "au VimEnter * call IMAP('SSE', "\\section{<++>}\<CR><++>", "tex")
+      "au VimEnter * call IMAP('SSS', "\\subsection{<++>}\<CR><++>", "tex")
+      "au VimEnter * call IMAP('SS2', "\\subsubsection{<++>}\<CR><++>", "tex")
+  "augroup END
 
   " Turn off alt keys so that I can use them in vim-latex
   au FileType *.tex set winaltkeys=no
+  au FileType *.tex nmap <F6> <plug>(vimtex-toc-open)
+  au FileType tex nmap <F6> <plug>(vimtex-toc-open)
 
   au FileType tex,md let g:airline_section_z = airline#section#create(['wc'])
 
@@ -414,29 +451,21 @@ let g:pandoc#biblio#bibs = ['/home/omri/repos/writings/library.bib']
 let g:pandoc#biblio#use_bibtool=1
 let g:pandoc#formatting#mode = 'h'
 let g:SuperTabDefaultCompletionType = "context"
-
-
+let g:pandoc#folding#level = 100
 
 " Change shareboard port:
 let g:shareboard_port = 8082
-
 
 " Ack - tell Ack which program to use
 let g:ackprg="ack -H --nocolor --nogroup --column"
 
 " Toggle real fullscreen (no buttons and menu)
-"function ToggleFullScreen()
-  "call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")
-  ""if &guioptions =~# 'm'
-      ""set guioptions-=m
-      ""set guioptions-=r
-      """set guioptions-=T
-  ""else
-      ""set guioptions+=m
-      ""set guioptions+=r
-      """set guioptions+=T
-  ""endif
-"endfunction
+function ToggleFullScreen()
+  call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")
+  "if &ft =~ 'tex\|pandoc\|markdown'
+      "ex :Goyo 90<cr>
+  "endif
+endfunction
 
 " By default, don't need the buttons in the top row
 set guioptions-=T
@@ -449,12 +478,20 @@ map               <F2> :NERDTreeToggle <CR>
 nnoremap          <F3> :GundoToggle<CR>
 nnoremap          <F4> :ToggleWord<CR> 
 noremap           <F5> :RainbowParenthesesToggle <CR>
-map               <F6> :Gstatus<CR>
+"map               <F6> :Gstatus<CR>
 map               <leader>f :Gstatus<CR>
 nnoremap<silent>  <F7> :TagbarToggle<CR>
 nnoremap          <F9> :set wrap!<CR>
 inoremap          <F9> <Esc>:set wrap! <CR>a
-map <silent>      <F12> :FullscreenToggle<CR>
+map <silent>      <F11> :call ToggleFullScreen()<CR>
+"map <silent>      <F12> :FullscreenToggle<CR>
+
+
+" Add some window resize functionality
+nnoremap <C-Right> : vertical resize +5<CR>
+nnoremap <C-Left>  : vertical resize -5<CR>
+nnoremap <C-Up>    : resize -5<CR>
+nnoremap <C-Down>  : resize +5<CR>
 
 " Definitions to make gundo work
 let g:gundo_preview_bottom=1
@@ -561,23 +598,33 @@ let g:UltiSnipsEditSplit="vertical"
 nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 " Adding a latex completer for cite and ref commands to YCM.
-let g:ycm_semantic_triggers = {
-\   'tex': ['\ref{', '\cite{'],
-\ }
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.tex = [
+      \ 're!\\[A-Za-z]*(ref|cite)[A-Za-z]*([^]]*])?{([^}]*, ?)*'
+      \ ]
+" Ignore latex warnings for quickfix window
+let g:vimtex_quickfix_ignore_all_warnings = 1
+"let g:ycm_semantic_triggers = {
+"\   'tex': ['\ref{', '\cite{'],
+"\ }
 
 " ---- VIM-LATEX ----
-let g:tex_flavor='latex'
-set grepprg=grep\ -nH\ $*
-let g:Tex_FoldedMisc="slide,preamble,<<<"
-let g:Tex_Folding=0
-" the last line prevents Latex-Suite from folding \item elements
-let g:Tex_DefaultTargetFormat = 'pdf'
-let g:Tex_MultipleCompileFormats = 'pdf, aux'
-let g:Tex_ViewRule_pdf = 'okular'
-let g:Tex_CompileRule_pdf = "/usr/bin/latexmk -e '$pdflatex=q/pdflatex -interaction=nonstopmode -file-line-error -hatl-on-error -synctex=1/' -pdf -bibtex $*"
+" UNDO TO USE VIM-LATEX
+"let g:tex_flavor='latex'
+"set grepprg=grep\ -nH\ $*
+"let g:Tex_FoldedMisc="slide,preamble,<<<"
+"let g:Tex_Folding=0
+"" the last line prevents Latex-Suite from folding \item elements
+"let g:Tex_DefaultTargetFormat = 'pdf'
+"let g:Tex_MultipleCompileFormats = 'pdf, aux'
+"let g:Tex_ViewRule_pdf = 'okular'
+"let g:Tex_CompileRule_pdf = "/usr/bin/latexmk -e '$pdflatex=q/pdflatex -interaction=nonstopmode -file-line-error -hatl-on-error -synctex=1/' -pdf -bibtex $*"
 
 " Make the ctrl-j mapping be c-space instead
-imap <C-space> <Plug>IMAP_JumpForward
+  " UNDO TO USE VIM-LATEX
+"imap <C-space> <Plug>IMAP_JumpForward
 
 " Make cool replacement of latex symbols with Unicode ones!
 set cole=2
@@ -596,6 +643,16 @@ nnoremap <leader>d :VCSDiff<CR>
 " ---- SYNTASTIC ----
 " Makes syntastic not check python files (because it hangs when saving
 " controllers/default.py in my sdh_db)
-let g:syntastic_mode_map = {'mode' : 'active',
-                        \   'active_filetypes' : [],
-                        \   'passive_filetypes': ['python']}
+"let g:syntastic_mode_map = {'mode' : 'active',
+                        "\   'active_filetypes' : [],
+                        "\   'passive_filetypes': ['python']}
+let g:syntastic_text_checkers = ['language-check']
+let g:syntastic_text_language_check_args = '--language=en-US'
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0

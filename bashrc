@@ -150,7 +150,7 @@ alias android-disconnect="fusermount -u /media/Galaxy"
 
 alias pg='ps aux | grep -v grep | grep --color=auto '
 alias vphd='VMAIL_HOME=$HOME/.vmail/phd vmail'
-alias wg='wget www.google.com'
+alias wg='(wget www.google.com && rm index.html)'
 
 function editmd() { 
     gvim $@ ; 
